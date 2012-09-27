@@ -3,7 +3,7 @@ from os import path, urandom, unlink
 from uuid import uuid4
 from datetime import date
 from werkzeug.utils import secure_filename
-from telemundo import subtitles
+from telemundo.subtitles import SubtitleParser
 
 ALLOWED_EXTENSIONS = set(['srt'])
 UPLOAD_FOLDER      = '/tmp'
@@ -11,7 +11,7 @@ UPLOAD_FOLDER      = '/tmp'
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
-parser = subtitles.parser()
+parser = SubtitleParser()
 runtime = Flask(__name__)
 runtime.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
