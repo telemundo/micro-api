@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tt xml:lang="{{ language }}" xmlns="http://www.w3.org/ns/ttml">
+  <head>
+    <metadata xmlns:ttm="http://www.w3.org/ns/ttml#metadata">
+      <ttm:copyright>Telemundo (c) {{ year }}, all rights reserved.</ttm:copyright>
+    </metadata>
+  </head>
+  <body>
+    <div>
+{% for caption in captions if caption %}
+      <p xml:id="caption-{{ loop.index }}" begin="{{ caption.begin }}" end="{{ caption.end }}">{{ caption.text }}</p>
+{% endfor %}
+    </div>
+  </body>
+</tt>
