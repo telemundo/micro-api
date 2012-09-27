@@ -1,3 +1,8 @@
-tornado==2.4
 Flask==0.9
+Jinja2==2.6
 PyYAML==3.10
+TelemundoPy==0.1-dev
+Werkzeug==0.8.3
+distribute==0.6.24
+tornado==2.4
+wsgiref==0.1.2

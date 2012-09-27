@@ -3,7 +3,7 @@ from os import path, urandom, unlink
 from uuid import uuid4
 from datetime import date
 from werkzeug.utils import secure_filename
-from lib import subtitle
+from telemundo import subtitles
 
 ALLOWED_EXTENSIONS = set(['srt'])
 UPLOAD_FOLDER      = '/tmp'
@@ -11,7 +11,7 @@ UPLOAD_FOLDER      = '/tmp'
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
-parser = subtitle.parser()
+parser = subtitles.parser()
 runtime = Flask(__name__)
 runtime.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -35,7 +35,7 @@ def ttml_parse():
         filename = path.join(runtime.config['UPLOAD_FOLDER'], secure_filename('%s-%s' % (str(uuid4()), upload.filename)))
         upload.save(filename)
         ''' process captions '''
-        captions = parser.parse(filename)
+        captions = parser.export(filename)
         ''' create response '''
         response = make_response(render_template('ttml/result.xml', language=language, year=date.today().year, captions=captions))
         response.mimetype = 'text/xml'
