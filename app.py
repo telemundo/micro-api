@@ -1,13 +1,9 @@
-'''
-@author: Rodolfo Puig <Rodolfo.Puig@nbcuni.com>
-@copyright: Telemundo Digital Media
-@organization: NBCUniversal
-'''
-
 from flask import Flask, request, abort, url_for, render_template, make_response
-from os import path, unlink
+from os import path, urandom, unlink
+from uuid import uuid4
 from datetime import date
 from werkzeug.utils import secure_filename
+from lib import subtitle
 
 ALLOWED_EXTENSIONS = set(['srt'])
 UPLOAD_FOLDER      = '/tmp'
@@ -15,6 +11,7 @@ UPLOAD_FOLDER      = '/tmp'
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
+parser = subtitle.parser()
 runtime = Flask(__name__)
 runtime.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -35,15 +32,15 @@ def ttml_parse():
         language = 'es'
     ''' validate upload '''
     if file and allowed_file(upload.filename):
-        filename = secure_filename(upload.filename)
-        filepath = path.join(runtime.config['UPLOAD_FOLDER'], filename)
-        upload.save(filepath)
+        filename = path.join(runtime.config['UPLOAD_FOLDER'], secure_filename('%s-%s' % (str(uuid4()), upload.filename)))
+        upload.save(filename)
         ''' process captions '''
-        captions = []
+        captions = parser.parse(filename)
         ''' create response '''
         response = make_response(render_template('ttml/result.xml', language=language, year=date.today().year, captions=captions))
         response.mimetype = 'text/xml'
-        unlink(filepath)
+        response.cache_control.no_cache = True
+        unlink(filename)
 
         return response
     else:

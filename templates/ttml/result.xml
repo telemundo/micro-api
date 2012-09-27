@@ -6,10 +6,8 @@
     </metadata>
   </head>
   <body>
-    <div>
-{% for caption in captions if caption %}
-      <p xml:id="caption-{{ loop.index }}" begin="{{ caption.begin }}" end="{{ caption.end }}">{{ caption.text }}</p>
-{% endfor %}
+    <div>{% autoescape false %}{% for caption in captions if caption %}
+      <p xml:id="caption-{{ loop.index }}" begin="{{ caption.begin }}" end="{{ caption.end }}">{{ caption.text }}</p>{% endfor %}{% endautoescape %}
     </div>
   </body>
 </tt>
